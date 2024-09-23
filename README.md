@@ -1,10 +1,11 @@
-## Project Overview
+# Project Overview
 This project is an automated testing framework built with WebdriverIO, TypeScript, and Mocha.
 It includes various test cases to validate functionalities such as adding products to a cart, validating cart totals, and submitting forms on a contact page.
 
 The project integrates with Jenkins for continuous integration, ensuring the tests are run automatically after each code push.
 
-## Project Structure
+<details>
+<summary><h2>Project Structure</h2></summary>
 
 The project follows a typical WebdriverIO structure with additional separation for page objects and data files.
 
@@ -30,6 +31,10 @@ The project follows a typical WebdriverIO structure with additional separation f
 ├── README.md                   # Project README file
 └── tsconfig.json               # TypeScript configuration
 ```
+</details>
+
+<details>
+<summary><h2>Setup Instructions</h2></summary>
 
 ## Setup Instructions
 
@@ -60,6 +65,8 @@ java -version
 ```
 
 ### 4. Running the Tests:
+## Running the tests
+
 You can execute the test suite by running the following command:
 This will run all tests defined in the test/specs/ folder using the configuration provided in wdio.conf.ts.
    
@@ -78,11 +85,12 @@ You can replace cart.spec.ts with any test file you want to execute individually
 ```bash
 npx wdio run wdio.conf.ts --spec test/specs/cart.spec.ts
 ```
+</details>
 
+<details>
+<summary><h2>Jenkins Integration</h2></summary>
 
-### 5. Set up **Jenkins** if necessary. Instructions are available in the **Jenkins Setup** section.
-
-## Jenkins Integration
+### Set up **Jenkins** if necessary. Instructions are available in the **Jenkins Setup** section.
 
 This project is ready for Jenkins integration. Follow the instructions below to set it up:
 
@@ -97,10 +105,12 @@ If you don't have Jenkins installed on your local machine or server, you can fol
 npm install
 npx wdio run wdio.conf.ts
 ```
+</details>
 
-### Section 6: Troubleshooting
+<details>
+<summary><h2>Troubleshooting</h2></summary>
 
-## Troubleshooting
+### Troubleshooting
 
 ### Common Issues:
 
@@ -121,10 +131,12 @@ To debug the test cases, you can use the following steps:
 ```bash
 npx wdio run wdio.conf.ts --debug
 ```
+</details>
+
+<details>
+<summary><h2>Future Improvements</h2></summary>
 
 ### Section 7: Future Improvements
-
-## Future Improvements
 
 1. **Add More Test Coverage**:
    - Expand the test coverage to include edge cases and negative test scenarios.
@@ -137,6 +149,8 @@ npx wdio run wdio.conf.ts --debug
 
 4. **Parallel Test Execution**:
    - Configure WebdriverIO to run tests in parallel across different browser sessions to reduce execution time.
+
+</details>
 
 ### Section 8: Logging
 
