@@ -6,7 +6,6 @@ The project integrates with Jenkins for continuous integration, ensuring the tes
 
 <details>
 <summary><h2>Project Structure</h2></summary>
-
 The project follows a typical WebdriverIO structure with additional separation for page objects and data files.
 
 ```bash
@@ -32,12 +31,8 @@ The project follows a typical WebdriverIO structure with additional separation f
 └── tsconfig.json               # TypeScript configuration
 ```
 </details>
-
 <details>
 <summary><h2>Setup Instructions</h2></summary>
-
-## Setup Instructions
-
 To set up the project locally, follow these steps:
 
 ### Prerequisites
@@ -63,13 +58,12 @@ npm install
 ```bash
 java -version
 ```
-
-### 4. Running the Tests:
-## Running the tests
-
+</details>
+<details>
+<summary><h2>Running the Tests</h2></summary>
 You can execute the test suite by running the following command:
 This will run all tests defined in the test/specs/ folder using the configuration provided in wdio.conf.ts.
-   
+
 ```bash
 npx wdio run wdio.conf.ts
 ```
@@ -81,16 +75,14 @@ npm test
 ## Running specific tests
 If you want to run a specific test suite, you can modify the command like this:
 You can replace cart.spec.ts with any test file you want to execute individually.
-
 ```bash
 npx wdio run wdio.conf.ts --spec test/specs/cart.spec.ts
 ```
 </details>
-
 <details>
 <summary><h2>Jenkins Integration</h2></summary>
 
-### Set up **Jenkins** if necessary. Instructions are available in the **Jenkins Setup** section.
+### Set up **Jenkins** if necessary.
 
 This project is ready for Jenkins integration. Follow the instructions below to set it up:
 
@@ -106,37 +98,30 @@ npm install
 npx wdio run wdio.conf.ts
 ```
 </details>
-
 <details>
 <summary><h2>Troubleshooting</h2></summary>
 
-### Troubleshooting
-
 ### Common Issues:
 
-1. **WebdriverIO not finding elements:**
+ - **WebdriverIO not finding elements:**
    - Ensure that element selectors are correct and that the application is loading as expected.
    - Use browser debug tools (like Chrome DevTools) to verify element selectors.
 
-2. **Test failures due to timeouts:**
+ - **Test failures due to timeouts:**
    - You can increase the timeout durations in `wdio.conf.ts` under `waitforTimeout` and `connectionRetryTimeout`.
 
-3. **Issues with Jenkins:**
+ - **Issues with Jenkins:**
    - Make sure Jenkins has access to all necessary environment variables and system paths.
    - Check Jenkins logs for any issues with plugin installations or builds.
 
 ### Debugging:
-
 To debug the test cases, you can use the following steps:
 ```bash
 npx wdio run wdio.conf.ts --debug
 ```
 </details>
-
 <details>
 <summary><h2>Future Improvements</h2></summary>
-
-### Section 7: Future Improvements
 
 1. **Add More Test Coverage**:
    - Expand the test coverage to include edge cases and negative test scenarios.
@@ -151,12 +136,11 @@ npx wdio run wdio.conf.ts --debug
    - Configure WebdriverIO to run tests in parallel across different browser sessions to reduce execution time.
 
 </details>
-
-### Section 8: Logging
-
-## Logging
+<details>
+<summary><h2>Logging</h2></summary>
 
 The project uses a logging utility in `utils/logger.ts`. Logs are primarily used for:
 
 - Capturing the state of tests.
 - Helping with debugging during Jenkins CI runs.
+</details>
