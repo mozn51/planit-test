@@ -53,6 +53,9 @@ export const config = {
     //
     capabilities: [{
         browserName: 'firefox',
+        'moz:firefoxOptions': {
+            args: ['-headless']
+        },
         acceptInsecureCerts: true
     }],
 
