@@ -15,7 +15,7 @@ export class HomePage extends BasePage {
       await this.open(urls.home)
       await this.isPageValid(await this.homePageButton, 'Home');
     } catch (error: any) {
-      logger(`Error opening Home page: ${error.message}`);
+      console.log(`Error opening Home page: ${error.message}`);
       throw error;
     }
   }
@@ -78,7 +78,7 @@ export class HomePage extends BasePage {
       logger(`Element ${element.selector} is clickable, proceeding to click.`);
       await element.click();
     }catch (error: any) {
-      logger(`Error clicking element ${element.selector}: ${error.message}`);
+      console.log(`Error clicking element ${element.selector}: ${error.message}`);
       throw error;
     }
   }

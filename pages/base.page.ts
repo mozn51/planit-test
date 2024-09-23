@@ -26,7 +26,7 @@ export class BasePage {
         }
       return isPageLoaded;
     } catch (error: any) {
-      logger(`Error validating if ${pageName} page is loaded: ${error.message}`);
+      console.log(`Error validating if ${pageName} page is loaded: ${error.message}`);
         return false;
     }
   }

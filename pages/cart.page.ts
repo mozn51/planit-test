@@ -16,7 +16,7 @@ export class CartPage extends BasePage {
       await this.open(urls.cart)
       await this.isPageValid(await this.cartPageButton, 'Cart');
     }catch (error: any) {
-      logger(`Error opening Cart page: ${error.message}`);
+      console.log(`Error opening Cart page: ${error.message}`);
       throw error;
     }
   }
@@ -77,7 +77,7 @@ export class CartPage extends BasePage {
       expect(quantity).toBe(expectedQuantity.toString());
       expect(subtotal).toBe(expectedSubtotal);
     } catch (error: any) {
-      logger(`Error validating cart item ${itemName}: ${error.message}`);
+      console.log(`Error validating cart item ${itemName}: ${error.message}`);
       throw error;
     }
   }
@@ -91,7 +91,7 @@ export class CartPage extends BasePage {
       const total = await this.totalPrice.getText();
       expect(total).toBe(expectedTotal);
     }catch (error: any) {
-      logger(`Error validating total price: ${error.message}`);
+      console.log(`Error validating total price: ${error.message}`);
       throw error;
     }
   }
@@ -105,7 +105,7 @@ export class CartPage extends BasePage {
       const emptyMessageDisplayed = await this.emptyCartMessage.isDisplayed();
       return emptyMessageDisplayed;
     } catch (error: any) {
-      logger(`Error checking if cart is empty: ${error.message}`);
+      console.log(`Error checking if cart is empty: ${error.message}`);
       throw error;
     }
   }
@@ -133,7 +133,7 @@ export class CartPage extends BasePage {
           }
       }
     } catch (error: any) {
-      logger(`Error validating cart items: ${error.message}`);
+      console.log(`Error validating cart items: ${error.message}`);
       throw error;
     }
   }

@@ -22,7 +22,7 @@ export class ContactPage extends BasePage {
       await this.open(urls.contact)
     await this.isPageValid(await this.contactPageButton, 'Contact');
     } catch (error: any) {
-      logger(`Error opening Contact page: ${error.message}`);
+      console.log(`Error opening Contact page: ${error.message}`);
       throw error;
     }
   }
@@ -88,7 +88,7 @@ export class ContactPage extends BasePage {
       await this.submitButton.waitForClickable();
       await this.submitButton.click();
     } catch (error: any) {
-      logger(`Error submitting the feedback form: ${error.message}`);
+      console.log(`Error submitting the feedback form: ${error.message}`);
       throw error;
     }
   }
@@ -129,7 +129,7 @@ export class ContactPage extends BasePage {
         await this.messageField.setValue(message);
       }
     } catch (error: any) {
-      logger(`Error filling up the the form: ${error.message}`);
+      console.log(`Error filling up the the form: ${error.message}`);
       throw error;
     }
   }
@@ -143,7 +143,7 @@ export class ContactPage extends BasePage {
       await this.backButton.waitForClickable();
       await this.backButton.click();
     } catch (error: any) {
-      logger(`Error to click Back Button: ${error.message}`);
+      console.log(`Error to click Back Button: ${error.message}`);
       throw error;
     }
   }
@@ -161,7 +161,7 @@ export class ContactPage extends BasePage {
       logger(`Forename error: ${errorText}`);
       return errorText;
     } catch (error: any) {
-      logger(`Error retrieving forename error: ${error.message}`);
+      console.log(`Error retrieving forename error: ${error.message}`);
       throw error;
     }
   }
@@ -177,7 +177,7 @@ export class ContactPage extends BasePage {
       logger(`Email error: ${errorText}`);
       return errorText;
     } catch (error: any) {
-      logger(`Error retrieving email error: ${error.message}`);
+      console.log(`Error retrieving email error: ${error.message}`);
       throw error;
     }
   }
@@ -193,7 +193,7 @@ export class ContactPage extends BasePage {
       logger(`Message error: ${errorText}`);
       return errorText;
     } catch (error: any) {
-      logger(`Error retrieving message error: ${error.message}`);
+      console.log(`Error retrieving message error: ${error.message}`);
       throw error;
     }
   }
@@ -222,7 +222,7 @@ export class ContactPage extends BasePage {
   
       return { forenameError, emailError, messageError };
     } catch (error: any) {
-      logger(`Error checking all Errors on mandatory fields: ${error.message}`);
+      console.log(`Error checking all Errors on mandatory fields: ${error.message}`);
       throw error;
     }
   }
@@ -239,7 +239,7 @@ export class ContactPage extends BasePage {
       await this.emailError.waitForDisplayed({ reverse: true, timeout: 5000 });
       await this.messageError.waitForDisplayed({ reverse: true, timeout: 5000 });
     } catch (error: any) {
-      logger(`Error checking for the absence of errors after completing mandatory fields: ${error.message}`);
+      console.log(`Error checking for the absence of errors after completing mandatory fields: ${error.message}`);
       throw error;
     }
   }
@@ -269,7 +269,7 @@ export class ContactPage extends BasePage {
       
       return messageText;
     } catch (error: any) {
-      logger(`Error validating submitted message: ${error.message}`);
+      console.log(`Error validating submitted message: ${error.message}`);
       throw error;
     }
   }

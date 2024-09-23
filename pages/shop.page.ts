@@ -17,7 +17,7 @@ export class ShopPage extends BasePage {
       await this.open(urls.shop);
       await this.isPageValid(await this.shopPageButton, 'Shop');
     } catch (error: any) {
-      logger(`Error opening Shop page: ${error.message}`);
+      console.log(`Error opening Shop page: ${error.message}`);
       throw error;
     }
   }
@@ -66,7 +66,7 @@ export class ShopPage extends BasePage {
         await buyButton.click();
       }
     } catch (error: any) {
-      logger(`Error buying product ${productName}: ${error.message}`);
+      console.log(`Error buying product ${productName}: ${error.message}`);
       throw error;
     }
   }
@@ -83,7 +83,7 @@ export class ShopPage extends BasePage {
       }
       logger('Finished buying all products.');
     } catch (error: any) {
-      logger(`Error buying multiple products: ${error.message}`);
+      console.log(`Error buying multiple products: ${error.message}`);
       throw error;
     }
   }
