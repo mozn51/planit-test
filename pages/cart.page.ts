@@ -1,6 +1,7 @@
 import { $ } from '@wdio/globals';
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
+import { logger } from '../utils/logger';
 
 
 export class CartPage extends BasePage {
@@ -23,18 +24,6 @@ export class CartPage extends BasePage {
     return $('div.alert strong');
   }
   
-  // get startShoppingButton() {
-  //   return $('//a[text()="Start Shopping »"]');
-  // }
-
-  // get notEmptyCartMessage() {
-  //   return $('//p[@class="cart-msg"]//span[@class="cart-count ng-binding"]');
-  // }
-
-  // get cartItems() {
-  //   return $$('//tr[contains(@class, "cart-item")]');
-  // }
-  
   get totalPrice() {
     return $('tfoot strong.total');
   }
@@ -50,30 +39,41 @@ export class CartPage extends BasePage {
    * @param expectedSubtotal - Subtotal.
    */
   public async validateItemInCart(itemName: string, expectedPrice: string, expectedQuantity: number, expectedSubtotal: string): Promise<void> {
-    const item = await $(`//tr[contains(., "${itemName}")]`);
-    await item.waitForDisplayed();
-    
-    if (!item) {
-      console.log(`Item ${itemName} not found in the cart.`);
+    try {
+      const item = await $(`//tr[contains(., "${itemName}")]`);
+      await item.waitForDisplayed();
+      
+      if (!item) {
+        console.log(`Item ${itemName} not found in the cart.`);
+      }
+     
+      // Collecting values.
+      const itemPrice = await item.$('td:nth-child(2).ng-binding');
+      await itemPrice.waitForDisplayed();
+      const price = await itemPrice.getText();
+      
+      const itemQuantity = await item.$('td:nth-child(3) input[type="number"]');
+      await itemQuantity.waitForDisplayed();
+      const quantity = await itemQuantity.getValue();
+      
+      const itemSubtotal = await item.$('td:nth-child(4).ng-binding');
+      await itemSubtotal.waitForDisplayed();
+      const subtotal = await itemSubtotal.getText();
+
+      // Logs for debugging
+      logger(`Validating cart item: ${itemName}`);
+      logger(`Expected price: ${expectedPrice}, Actual price: ${price}`);
+      logger(`Expected quantity: ${expectedQuantity}, Actual quantity: ${quantity}`);
+      logger(`Expected subtotal: ${expectedSubtotal}, Actual subtotal: ${subtotal}`);
+      
+      // Perform assertions
+      expect(price).toBe(expectedPrice);
+      expect(quantity).toBe(expectedQuantity.toString());
+      expect(subtotal).toBe(expectedSubtotal);
+    } catch (error: any) {
+      logger(`Error validating cart item ${itemName}: ${error.message}`);
+      throw error;
     }
-   
-    // Collecting values.
-    const itemPrice = await item.$('td:nth-child(2).ng-binding');
-    await itemPrice.waitForDisplayed();
-    const price = await itemPrice.getText();
-    
-    const itemQuantity = await item.$('td:nth-child(3) input[type="number"]');
-    await itemQuantity.waitForDisplayed();
-    const quantity = await itemQuantity.getValue();
-    
-    const itemSubtotal = await item.$('td:nth-child(4).ng-binding');
-    await itemSubtotal.waitForDisplayed();
-    const subtotal = await itemSubtotal.getText();
-    
-    // Perform assertions
-    expect(price).toBe(expectedPrice);
-    expect(quantity).toBe(expectedQuantity.toString());
-    expect(subtotal).toBe(expectedSubtotal);
   }
 
   /**

@@ -1,6 +1,7 @@
 import { $ } from '@wdio/globals'
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
+import { logger } from '../utils/logger';
 
 export class HomePage extends BasePage {
   // Page Navigation
@@ -36,32 +37,28 @@ export class HomePage extends BasePage {
 
   //Actions
 
-  // /**
-  //  * Click the Start Shopping button after verifying it's clickable.
-  //  */
-  // public async clickStartShopping(): Promise<void> {
-  //   await this.verifyElementClickableAndClick(this.startShoppingButton);
-  // }
-
   /**
    * Click the Shop button after verifying it's clickable.
    */
   public async clickShop(): Promise<void> {
-    await this.verifyElementClickableAndClick(this.shopButton);
+    const shopButton = await this.shopButton;
+    await this.verifyElementClickableAndClick(shopButton);
   }
 
   /**
    * Click the Cart button after verifying it's clickable.
    */
   public async clickCart(): Promise<void> {
-    await this.verifyElementClickableAndClick(this.cartButton);
+    const cartButton = await this.cartButton;
+    await this.verifyElementClickableAndClick(cartButton);
   }
 
    /**
    * Click the Contact button after verifying it's clickable.
    */
   public async clickContact(): Promise<void> {
-    await this.verifyElementClickableAndClick(this.contactButton);
+    const contactButton = await this.contactButton;
+    await this.verifyElementClickableAndClick(contactButton);
   }
 
   /**
@@ -70,7 +67,13 @@ export class HomePage extends BasePage {
    * @param element - Web element to verify and click.
    */
   public async verifyElementClickableAndClick(element: any): Promise<void> {
-    await element.waitForClickable();
-    await element.click();
+    try {
+      await element.waitForClickable();
+      logger(`Element ${element.selector} is clickable, proceeding to click.`);
+      await element.click();
+    }catch (error: any) {
+      logger(`Error clicking element ${element.selector}: ${error.message}`);
+      throw error;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { browser } from '@wdio/globals';
+import { logger } from '../utils/logger';
 
 export class BasePage {
   /**
@@ -17,12 +18,14 @@ export class BasePage {
   public async isPageValid(pageButton: WebdriverIO.Element, pageName: string): Promise<boolean> {
     try {
       const isPageLoaded = await pageButton.isDisplayed();
-      if (!isPageLoaded) {
-        console.log(`${pageName} page is NOT loaded.`);
-      }
+        if (isPageLoaded) {
+            logger(`${pageName} page is loaded successfully.`);
+        } else {
+            logger(`${pageName} page is NOT loaded.`);
+        }
       return isPageLoaded;
     } catch (error: any) {
-      console.error(`Error validating if ${pageName} page is loaded: ${error.message}`);
+      logger(`Error validating if ${pageName} page is loaded: ${error.message}`);
         return false;
     }
   }

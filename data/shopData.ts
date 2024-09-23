@@ -1,6 +1,9 @@
+// This file contains the list of products available in the shop and their corresponding details.
+
 export type ProductName = keyof typeof shopList;
 
 export const shopList = {
+    // products
     Teddy_Bear: { name: "Teddy Bear", price: "$12.99" },
     Stuffed_Frog: { name: "Stuffed Frog", price: "$10.99" },
     Handmade_Doll: { name: "Handmade Doll", price: "$10.99" },
