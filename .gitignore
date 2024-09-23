@@ -1,0 +1,33 @@
+# Node modules folder
+node_modules/
+
+# VSCode specific files
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (if any)
+.env
+.env.local
+
+# Build directories
+dist/
+out/
+build/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+
+# Other system files
+.idea/
