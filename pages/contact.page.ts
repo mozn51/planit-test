@@ -15,10 +15,16 @@ export class ContactPage extends BasePage {
 
   /**
    * Navigate to the Contact page and verify if the page is loaded.
+   * This method also logs an error if the page fails to load.
    */
   public async openUrl(): Promise<void> {
-    await this.open(urls.contact)
+    try {
+      await this.open(urls.contact)
     await this.isPageValid(await this.contactPageButton, 'Contact');
+    } catch (error: any) {
+      logger(`Error opening Contact page: ${error.message}`);
+      throw error;
+    }
   }
 
   // Collecting the elements on the page
@@ -74,16 +80,22 @@ export class ContactPage extends BasePage {
 
   /**
    * Submit the contact form by clicking the submit button.
+   * Logs an error if the form submission fails.
    */
   public async submitForm(): Promise<void> {
-    console.log('Submitting the feedback form...');
-    await this.submitButton.waitForClickable();
-    await this.submitButton.click();
+    try {
+      console.log('Submitting the feedback form...');
+      await this.submitButton.waitForClickable();
+      await this.submitButton.click();
+    } catch (error: any) {
+      logger(`Error submitting the feedback form: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
    * Fill the contact form with both mandatory and optional fields.
-   * Provides logs for each field.
+   * Logs an error if the form submission fails.
    * @param forename - Mandatory forename field.
    * @param surname - Optional surname field.
    * @param email - Mandatory email field.
@@ -91,121 +103,174 @@ export class ContactPage extends BasePage {
    * @param message - Mandatory message field.
    */
   public async fillForm(forename: string, surname: string, email: string, telephone: string, message: string): Promise<void> {
-    if (forename) {
-      logger(`Setting forename: ${forename}`);
-      await this.forenameField.setValue(forename);
-    }
-
-    if (surname) {
-      logger(`Setting surname: ${surname}`);
-      await this.surnameField.setValue(surname);
-    }
-
-    if (email) {
-      logger(`Setting email: ${email}`);
-      await this.emailField.setValue(email);
-    }
-
-    if (telephone) {
-      logger(`Setting telephone: ${telephone}`);
-      await this.telephoneField.setValue(telephone);
-    }
-
-    if (message) {
-      logger(`Setting message: ${message}`);
-      await this.messageField.setValue(message);
+    try {
+      if (forename) {
+        logger(`Setting forename: ${forename}`);
+        await this.forenameField.setValue(forename);
+      }
+  
+      if (surname) {
+        logger(`Setting surname: ${surname}`);
+        await this.surnameField.setValue(surname);
+      }
+  
+      if (email) {
+        logger(`Setting email: ${email}`);
+        await this.emailField.setValue(email);
+      }
+  
+      if (telephone) {
+        logger(`Setting telephone: ${telephone}`);
+        await this.telephoneField.setValue(telephone);
+      }
+  
+      if (message) {
+        logger(`Setting message: ${message}`);
+        await this.messageField.setValue(message);
+      }
+    } catch (error: any) {
+      logger(`Error filling up the the form: ${error.message}`);
+      throw error;
     }
   }
 
+  /**
+   * Click Back Button after the message was submitted.
+   * Logs an error if clicking the button fails.
+   */
   public async clickBackButton(): Promise<void> {
-    await this.backButton.waitForClickable();
-    await this.backButton.click();
-
+    try {
+      await this.backButton.waitForClickable();
+      await this.backButton.click();
+    } catch (error: any) {
+      logger(`Error to click Back Button: ${error.message}`);
+      throw error;
+    }
   }
 
   //Errors Validations
   
   /**
    * Check and log the error message for the forename field.
-   * @returns {Promise<string>} - Error message for forename.
+   * Logs an error if the message cannot be retrieved.
+   * @returns {Promise<string>} - Error message for forename field.
    */
   public async checkForenameError(): Promise<string> {
-    const errorText = await this.forenameError.getText();
-    logger(`Forename error: ${errorText}`);
-    return errorText;
+    try {
+      const errorText = await this.forenameError.getText();
+      logger(`Forename error: ${errorText}`);
+      return errorText;
+    } catch (error: any) {
+      logger(`Error retrieving forename error: ${error.message}`);
+      throw error;
+    }
   }
 
    /**
    * Check and log the error message for the email field.
-   * @returns {Promise<string>} - Error message for email.
+   * Logs an error if the message cannot be retrieved.
+   * @returns {Promise<string>} - Error message for email field.
    */
   public async checkEmailError(): Promise<string> {
-    const errorText = await this.emailError.getText();
-    logger(`Email error: ${errorText}`);
-    return errorText;
+    try {
+      const errorText = await this.emailError.getText();
+      logger(`Email error: ${errorText}`);
+      return errorText;
+    } catch (error: any) {
+      logger(`Error retrieving email error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
    * Check and log the error message for the message field.
-   * @returns {Promise<string>} - Error message for message.
+   * Logs an error if the message cannot be retrieved.
+   * @returns {Promise<string>} - Error message for message field.
    */
   public async checkMessageError(): Promise<string> {
-    const errorText = await this.messageError.getText();
-    logger(`Message error: ${errorText}`);
-    return errorText;
+    try {
+      const errorText = await this.messageError.getText();
+      logger(`Message error: ${errorText}`);
+      return errorText;
+    } catch (error: any) {
+      logger(`Error retrieving message error: ${error.message}`);
+      throw error;
+    }
   }
  
   /**
    * Check all error messages at once.
-   * Logs each error and returns them in an object.
+   * Returns an object containing all error messages.
+   * Logs an error if any issue occurs while retrieving messages.
    * @returns {Promise<ErrorMessages>} - Object containing all error messages.
    */
   public async checkAllErrors(): Promise<ErrorMessages> {
-    console.log('Validating errors messages for empty mandatory fields.');
-    await this.forenameError.waitForDisplayed({ timeout: 5000 });
-    const forenameError = await this.forenameError.getText();
-
-    await this.emailError.waitForDisplayed({ timeout: 5000 });
-    const emailError = await this.emailError.getText();
-    
-    await this.messageError.waitForDisplayed({ timeout: 5000 });
-    const messageError = await this.messageError.getText();
-
-    logger(`Forename error: ${forenameError}`);
-    logger(`Email error: ${emailError}`);
-    logger(`Message error: ${messageError}`);
-
-    return { forenameError, emailError, messageError };
+    try {
+      console.log('Validating errors messages for empty mandatory fields.');
+      await this.forenameError.waitForDisplayed({ timeout: 5000 });
+      const forenameError = await this.forenameError.getText();
+  
+      await this.emailError.waitForDisplayed({ timeout: 5000 });
+      const emailError = await this.emailError.getText();
+      
+      await this.messageError.waitForDisplayed({ timeout: 5000 });
+      const messageError = await this.messageError.getText();
+  
+      logger(`Forename error: ${forenameError}`);
+      logger(`Email error: ${emailError}`);
+      logger(`Message error: ${messageError}`);
+  
+      return { forenameError, emailError, messageError };
+    } catch (error: any) {
+      logger(`Error checking all Errors on mandatory fields: ${error.message}`);
+      throw error;
+    }
   }
 
-
+  /**
+   * Check if the error messages are gone after completing mandatory fields.
+   * Logs an error if messages are still displayed or if there is an issue checking.
+   */
   public async checkAllErrorsAreGone(): Promise<void> {
-    // Wait until error messages are no longer displayed
-    console.log('No errors messages after completing mandatory fields.');
-    await this.forenameError.waitForDisplayed({ reverse: true, timeout: 5000 });
-    await this.emailError.waitForDisplayed({ reverse: true, timeout: 5000 });
-    await this.messageError.waitForDisplayed({ reverse: true, timeout: 5000 });
-}
+    try {
+      // Wait until error messages are no longer displayed
+      console.log('Checking if error messages are gone after completing mandatory fields.');
+      await this.forenameError.waitForDisplayed({ reverse: true, timeout: 5000 });
+      await this.emailError.waitForDisplayed({ reverse: true, timeout: 5000 });
+      await this.messageError.waitForDisplayed({ reverse: true, timeout: 5000 });
+    } catch (error: any) {
+      logger(`Error checking for the absence of errors after completing mandatory fields: ${error.message}`);
+      throw error;
+    }
+  }
 
-
+  /**
+   * Validate if the feedback message was sucessfuly completed.
+   * Returns the submitted message text.
+   */
   public async validateSubmittedMessage(): Promise<string> {
-    logger("Waiting for the pop up message to disapper...");
-    const feedbackModal = $('.popup.modal');
-    await feedbackModal.waitForDisplayed({ reverse: true, timeout: 20000 });
-        
-    logger("Waiting for the success message to be displayed...");
-    await (await this.submittedMessage).waitForDisplayed();
-
-    const messageText = await this.submittedMessage.getText();
-    logger(`Success message text: ${messageText}`);
-
-    expect(messageText).toContain('Thanks');
-    console.log(`Submitted success message validated: ${messageText}`);
-
-    // Check if the "Back" button is visible
-    const backButtonVisible = await this.backButton.isDisplayed();
-    expect(backButtonVisible).toBe(true);
-    
-    return messageText;
-}
+    try {
+      logger("Waiting for the pop up message to disapper...");
+      const feedbackModal = $('.popup.modal');
+      await feedbackModal.waitForDisplayed({ reverse: true, timeout: 20000 });
+          
+      logger("Waiting for the success message to be displayed...");
+      await (await this.submittedMessage).waitForDisplayed();
+  
+      const messageText = await this.submittedMessage.getText();
+      logger(`Success message text: ${messageText}`);
+  
+      expect(messageText).toContain('Thanks');
+      console.log(`Submitted success message validated: ${messageText}`);
+  
+      // Check if the "Back" button is visible
+      const backButtonVisible = await this.backButton.isDisplayed();
+      expect(backButtonVisible).toBe(true);
+      
+      return messageText;
+    } catch (error: any) {
+      logger(`Error validating submitted message: ${error.message}`);
+      throw error;
+    }
+  }
 }

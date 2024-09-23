@@ -10,10 +10,16 @@ export class ShopPage extends BasePage {
 
   /**
    * Navigate to the Shop page and verify if the page is loaded.
+   * This method also logs an error if the page fails to load.
    */
   public async openUrl(): Promise<void> {
-    await this.open(urls.shop);
-    await this.isPageValid(await this.shopPageButton, 'Shop');
+    try {
+      await this.open(urls.shop);
+      await this.isPageValid(await this.shopPageButton, 'Shop');
+    } catch (error: any) {
+      logger(`Error opening Shop page: ${error.message}`);
+      throw error;
+    }
   }
 
   // Collecting the elements on the page
@@ -25,6 +31,7 @@ export class ShopPage extends BasePage {
 
   /**
    * Method to get the elements of a product by its name (from shopList).
+   * Logs the retrieval process and throws an error if the product is not found.
    * Provides easy access to product details: name, price, and buy button.
    * @param productName - The name of the product (from shopList).
    */
@@ -34,7 +41,6 @@ export class ShopPage extends BasePage {
     if (!product) {
       throw new Error(`Product ${productName} not found in shopList`);
     }
-
     return {
       productNameElement: $(`//h4[contains(text(), "${product.name}")]`),
       productPriceElement: $(`//h4[contains(text(), "${product.name}")]/following-sibling::p[@class="product-price"]`),
@@ -44,19 +50,24 @@ export class ShopPage extends BasePage {
 
   /**
    * Method to buy a product by its name.
-   * Logs added for clarity on actions being performed.
+   * Logs the action being performed and throws an error if it fails.
    * @param productName - The name of the product (from shopList).
    * @param quantity - The number of items to buy.
    */
   public async buyProduct(productName: ProductName, quantity: number): Promise<void> {
-    const { buyButton } = this.getProductElements(productName);
+    try {
+      const { buyButton } = this.getProductElements(productName);
        
-    logger(`Buying ${quantity} of ${productName}`);
-    for (let i = 0; i < quantity; i++) {
-      logger(`Clicking buy button for product ${productName}, iteration ${i + 1}`);
-      // Ensure the product's Buy button is clickable before clicking it
-      await buyButton.waitForClickable();
-      await buyButton.click();
+      logger(`Buying ${quantity} of ${productName}`);
+      for (let i = 0; i < quantity; i++) {
+        logger(`Clicking buy button for product ${productName}, iteration ${i + 1}`);
+        // Ensure the product's Buy button is clickable before clicking it
+        await buyButton.waitForClickable();
+        await buyButton.click();
+      }
+    } catch (error: any) {
+      logger(`Error buying product ${productName}: ${error.message}`);
+      throw error;
     }
   }
 
@@ -65,11 +76,16 @@ export class ShopPage extends BasePage {
    * @param productList - Array of products, each with a name and quantity.
    */
   public async buyMultipleProducts(productList: { name: ProductName, quantity: number }[]): Promise<void> {
-    logger('Starting to buy multiple products...');
-    for (const product of productList) {
-      await this.buyProduct(product.name, product.quantity);
+    try {
+      logger('Starting to buy multiple products...');
+      for (const product of productList) {
+        await this.buyProduct(product.name, product.quantity);
+      }
+      logger('Finished buying all products.');
+    } catch (error: any) {
+      logger(`Error buying multiple products: ${error.message}`);
+      throw error;
     }
-    logger('Finished buying all products.');
   }
 }
 

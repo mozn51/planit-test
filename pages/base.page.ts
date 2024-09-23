@@ -12,6 +12,7 @@ export class BasePage {
 
   /**
    * Validates that the correct page is loaded by checking the active page button.
+   * This method also logs an error if the page fails to load.
    * @param pageButtonSelector - The element representing the page button.
    * @param pageName - The name of the page being validated (for logging/debugging purposes).
    */

@@ -9,10 +9,16 @@ export class CartPage extends BasePage {
   // Page Navigation
   /**
    * Navigate to the Cart page and verify if the page is loaded.
+   * This method also logs an error if the page fails to load.
    */
   public async openUrl(): Promise<void> {
-    await this.open(urls.cart)
-    await this.isPageValid(await this.cartPageButton, 'Cart');
+    try {
+      await this.open(urls.cart)
+      await this.isPageValid(await this.cartPageButton, 'Cart');
+    }catch (error: any) {
+      logger(`Error opening Cart page: ${error.message}`);
+      throw error;
+    }
   }
 
   // Collecting the elements on the page
@@ -81,8 +87,13 @@ export class CartPage extends BasePage {
    * @param expectedTotal - Total price expected.
    */
   public async validateTotalPrice(expectedTotal: string): Promise<void> {
-    const total = await this.totalPrice.getText();
-    expect(total).toBe(expectedTotal);
+    try {
+      const total = await this.totalPrice.getText();
+      expect(total).toBe(expectedTotal);
+    }catch (error: any) {
+      logger(`Error validating total price: ${error.message}`);
+      throw error;
+    }
   }
   
   /**
@@ -90,8 +101,13 @@ export class CartPage extends BasePage {
    * If it's empty, return true. If it's not empty, return false.
    */
   public async isCartEmpty(): Promise<boolean> {
-    const emptyMessageDisplayed = await this.emptyCartMessage.isDisplayed();
-    return emptyMessageDisplayed;
+    try {
+      const emptyMessageDisplayed = await this.emptyCartMessage.isDisplayed();
+      return emptyMessageDisplayed;
+    } catch (error: any) {
+      logger(`Error checking if cart is empty: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -104,16 +120,21 @@ export class CartPage extends BasePage {
    * @param subtotal - subtotal.
    */
   public async validateCartItems(expectedItems: Array<{ name: string, price: string, quantity: number, subtotal: string }>): Promise<void> {
-    const isEmpty = await this.isCartEmpty();
+    try {
+      const isEmpty = await this.isCartEmpty();
 
-    if (isEmpty) {
-        console.log('Cart is empty. No items to validate.');
-        throw new Error('Cannot validate items: the cart is empty.');
-    } else {
-        for (let value of expectedItems) {
-          const { name, price, quantity, subtotal } = value;
-          await this.validateItemInCart(name, price, quantity, subtotal);
-        }
+      if (isEmpty) {
+          console.log('Cart is empty. No items to validate.');
+          throw new Error('Cannot validate items: the cart is empty.');
+      } else {
+          for (let value of expectedItems) {
+            const { name, price, quantity, subtotal } = value;
+            await this.validateItemInCart(name, price, quantity, subtotal);
+          }
+      }
+    } catch (error: any) {
+      logger(`Error validating cart items: ${error.message}`);
+      throw error;
     }
   }
 }

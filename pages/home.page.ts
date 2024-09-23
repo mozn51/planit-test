@@ -8,10 +8,16 @@ export class HomePage extends BasePage {
 
   /**
    * Navigate to the Home page and verify if the page is loaded.
+   * This method also logs an error if the page fails to load.
    */
   public async openUrl(): Promise<void> {
-    await this.open(urls.home)
-    await this.isPageValid(await this.homePageButton, 'Home');
+    try {
+      await this.open(urls.home)
+      await this.isPageValid(await this.homePageButton, 'Home');
+    } catch (error: any) {
+      logger(`Error opening Home page: ${error.message}`);
+      throw error;
+    }
   }
 
   // Collecting the elements on the page
