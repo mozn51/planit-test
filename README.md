@@ -20,6 +20,8 @@ The project follows a typical WebdriverIO structure with additional separation f
 │   ├── contact.page.ts         # Page object for the Contact Page
 │   ├── home.page.ts            # Page object for the Home Page
 │   ├── shop.page.ts            # Page object for the Shop Page
+├── reports/
+│   └── junit-results/          # JUnit XML test reports generated during test execution
 ├── test/
 │   └── specs/
 │       ├── cart.spec.ts        # Test cases for the Cart
@@ -73,6 +75,29 @@ You can modify these values based on your logging preferences and requirements.
 
 </details>
 <details>
+<summary><h2>Test Reporting Setup</h2></summary>
+
+This project uses `JUnit` for test result reporting with WebdriverIO. The reports are generated after running the tests and can be viewed in Jenkins.
+
+## JUnit Reporter Configuration
+
+The JUnit reporter is configured in `wdio.conf.js`. Here is the configuration used:
+
+```bash
+reporters: ['spec', ['junit', {
+    outputDir: './reports/junit-results/',
+    outputFileFormat: function (options) {
+        return `results-${options.cid}.xml`
+    }
+}]],
+```
+
+ - The JUnit reports are saved in the `./reports/junit-results/ directory`.
+ - Each worker generates its own XML report file.
+
+</details>
+
+<details>
 <summary><h2>Running the Tests</h2></summary>
 You can execute the test suite by running the following command:
 This will run all tests defined in the test/specs/ folder using the configuration provided in wdio.conf.ts.
@@ -111,10 +136,46 @@ If you don't have Jenkins installed on your local machine or server, you can fol
 - Under "Build," add an "Execute Shell" or "Execute Batch Command" build step with the following command:
 ```bash
 npm install
-npx wdio run wdio.conf.ts
+npx test
 ```
 
 Ensure that the `.env` file is included or configured within Jenkins so that environment variables such as `USE_WINSTON` and `LOG_LEVEL` are correctly applied when running the tests. This will allow Jenkins to use the same logging configuration as your local environment.
+
+### 3. Handle Environment Variables in Jenkins
+
+Ensure the environment variables from your `.env` file (such as `USE_WINSTON` and `LOG_LEVEL`) are passed correctly to Jenkins. You can do this in two ways:
+
+**Option 1: Jenkins Environment Injection**
+ - In the Jenkins job configuration, under Build Environment, check Inject environment variables.
+ - Create a properties file with your environment variables or manually define them.
+
+Example:
+
+```bash
+USE_WINSTON=true
+LOG_LEVEL=info
+```
+
+**Option 2: Set Environment Variables in Shell Script**
+ - Add the environment variables directly in the shell command you are using to build the project.
+
+```bash
+export USE_WINSTON=true
+export LOG_LEVEL=info
+npm install
+npm test
+```
+
+### 4. JUnit Test Reporting in Jenkins
+
+**To view test reports in Jenkins:**
+ - In Post-build Actions, add Publish JUnit test result report.
+ - In the Test report XMLs field, enter the path to your JUnit test report files:
+
+```bash
+reports/junit-results/*.xml
+```
+ - Jenkins will generate a summary of the test results, and you can view detailed results in the Test Result section after each build.
 
 </details>
 <details>
