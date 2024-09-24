@@ -137,7 +137,12 @@ export const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: ['spec', ['junit', {
+        outputDir: './reports/junit-results/', // Directory to save the report files
+        outputFileFormat: function(options: any) { // Optional: Customize the report file names
+            return `results-${options.cid}.xml`;
+        }
+    }]],
 
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
