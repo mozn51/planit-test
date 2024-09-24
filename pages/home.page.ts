@@ -1,7 +1,7 @@
 import { $ } from '@wdio/globals'
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
-import { logger } from '../utils/logger';
+import { customLogger, LogLevel } from '../utils/logger';
 
 export class HomePage extends BasePage {
   // Page Navigation
@@ -14,8 +14,9 @@ export class HomePage extends BasePage {
     try {
       await this.open(urls.home)
       await this.isPageValid(await this.homePageButton, 'Home');
+      customLogger('Navigated to Home page successfully', LogLevel.INFO);
     } catch (error: any) {
-      console.log(`Error opening Home page: ${error.message}`);
+      customLogger(`Error opening Home page: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -75,10 +76,10 @@ export class HomePage extends BasePage {
   public async verifyElementClickableAndClick(element: any): Promise<void> {
     try {
       await element.waitForClickable();
-      logger(`Element ${element.selector} is clickable, proceeding to click.`);
+      customLogger(`Element ${element.selector} is clickable, proceeding to click.`, LogLevel.INFO);
       await element.click();
     }catch (error: any) {
-      console.log(`Error clicking element ${element.selector}: ${error.message}`);
+      customLogger(`Error clicking element ${element.selector}: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }

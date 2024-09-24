@@ -2,7 +2,7 @@ import { $ } from '@wdio/globals';
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
 import { shopList, ProductName } from '../data/shopData';
-import { logger } from '../utils/logger';
+import { customLogger, LogLevel } from '../utils/logger';
 
 export class ShopPage extends BasePage {
   
@@ -16,8 +16,9 @@ export class ShopPage extends BasePage {
     try {
       await this.open(urls.shop);
       await this.isPageValid(await this.shopPageButton, 'Shop');
+      customLogger('Navigated to Shop page successfully', LogLevel.INFO);
     } catch (error: any) {
-      console.log(`Error opening Shop page: ${error.message}`);
+      customLogger(`Error opening Shop page: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -37,10 +38,11 @@ export class ShopPage extends BasePage {
    */
   public getProductElements(productName: ProductName) {
     const product = shopList[productName];
-    logger(`Getting product elements for ${product.name}`);
     if (!product) {
+      customLogger(`Product ${productName} not found in shopList`, LogLevel.ERROR);
       throw new Error(`Product ${productName} not found in shopList`);
     }
+    customLogger(`Product elements found for ${product.name}`, LogLevel.INFO);
     return {
       productNameElement: $(`//h4[contains(text(), "${product.name}")]`),
       productPriceElement: $(`//h4[contains(text(), "${product.name}")]/following-sibling::p[@class="product-price"]`),
@@ -57,16 +59,16 @@ export class ShopPage extends BasePage {
   public async buyProduct(productName: ProductName, quantity: number): Promise<void> {
     try {
       const { buyButton } = this.getProductElements(productName);
-       
-      logger(`Buying ${quantity} of ${productName}`);
+      customLogger(`Buying ${quantity} of ${productName}`, LogLevel.INFO);
+
       for (let i = 0; i < quantity; i++) {
-        logger(`Clicking buy button for product ${productName}, iteration ${i + 1}`);
         // Ensure the product's Buy button is clickable before clicking it
         await buyButton.waitForClickable();
+        customLogger(`Clicking buy button for product ${productName}, iteration ${i + 1}`, LogLevel.INFO);
         await buyButton.click();
       }
     } catch (error: any) {
-      console.log(`Error buying product ${productName}: ${error.message}`);
+      customLogger(`Error buying product ${productName}: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -77,13 +79,13 @@ export class ShopPage extends BasePage {
    */
   public async buyMultipleProducts(productList: { name: ProductName, quantity: number }[]): Promise<void> {
     try {
-      logger('Starting to buy multiple products...');
+      customLogger('Starting to buy multiple products...', LogLevel.INFO);
       for (const product of productList) {
         await this.buyProduct(product.name, product.quantity);
       }
-      logger('Finished buying all products.');
+      customLogger('Finished buying all products.', LogLevel.INFO);
     } catch (error: any) {
-      console.log(`Error buying multiple products: ${error.message}`);
+      customLogger(`Error buying multiple products: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }

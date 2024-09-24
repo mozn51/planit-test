@@ -1,5 +1,5 @@
 import { browser } from '@wdio/globals';
-import { logger } from '../utils/logger';
+import { customLogger, LogLevel } from '../utils/logger';
 
 export class BasePage {
   /**
@@ -7,7 +7,12 @@ export class BasePage {
    * @param url - The URL to navigate to.
    */
   public async open(url: string): Promise<void> {
-    await browser.url(url);
+    try {
+      await browser.url(url);
+      customLogger(`Navigated to ${url}`, LogLevel.INFO);
+    } catch (error: any) {
+      customLogger(`Error navigating to ${url}: ${error.message}`, LogLevel.ERROR);
+    }
   }
 
   /**
@@ -20,13 +25,13 @@ export class BasePage {
     try {
       const isPageLoaded = await pageButton.isDisplayed();
         if (isPageLoaded) {
-            logger(`${pageName} page is loaded successfully.`);
+            customLogger(`${pageName} page is loaded successfully.`, LogLevel.INFO);
         } else {
-            logger(`${pageName} page is NOT loaded.`);
+          customLogger(`${pageName} page is NOT loaded.`, LogLevel.ERROR);
         }
       return isPageLoaded;
     } catch (error: any) {
-      console.log(`Error validating if ${pageName} page is loaded: ${error.message}`);
+      customLogger(`Error validating if ${pageName} page is loaded: ${error.message}`, LogLevel.ERROR);
         return false;
     }
   }

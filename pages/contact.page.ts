@@ -1,7 +1,7 @@
 import { $ } from '@wdio/globals';
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
-import { logger } from '../utils/logger';
+import { customLogger, LogLevel } from '../utils/logger';
 
 interface ErrorMessages {
     forenameError: string;
@@ -21,8 +21,9 @@ export class ContactPage extends BasePage {
     try {
       await this.open(urls.contact)
     await this.isPageValid(await this.contactPageButton, 'Contact');
+    customLogger('Navigated to Contact page', LogLevel.INFO);
     } catch (error: any) {
-      console.log(`Error opening Contact page: ${error.message}`);
+      customLogger(`Error opening Contact page: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -84,11 +85,11 @@ export class ContactPage extends BasePage {
    */
   public async submitForm(): Promise<void> {
     try {
-      console.log('Submitting the feedback form...');
+      customLogger('Submitting the feedback form...', LogLevel.INFO);
       await this.submitButton.waitForClickable();
       await this.submitButton.click();
     } catch (error: any) {
-      console.log(`Error submitting the feedback form: ${error.message}`);
+      customLogger(`Error submitting the feedback form: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -105,31 +106,31 @@ export class ContactPage extends BasePage {
   public async fillForm(forename: string, surname: string, email: string, telephone: string, message: string): Promise<void> {
     try {
       if (forename) {
-        logger(`Setting forename: ${forename}`);
+        customLogger(`Setting forename: ${forename}`, LogLevel.INFO);
         await this.forenameField.setValue(forename);
       }
   
       if (surname) {
-        logger(`Setting surname: ${surname}`);
+        customLogger(`Setting surname: ${surname}`, LogLevel.INFO);
         await this.surnameField.setValue(surname);
       }
   
       if (email) {
-        logger(`Setting email: ${email}`);
+        customLogger(`Setting email: ${email}`, LogLevel.INFO);
         await this.emailField.setValue(email);
       }
   
       if (telephone) {
-        logger(`Setting telephone: ${telephone}`);
+        customLogger(`Setting telephone: ${telephone}`, LogLevel.INFO);
         await this.telephoneField.setValue(telephone);
       }
   
       if (message) {
-        logger(`Setting message: ${message}`);
+        customLogger(`Setting message: ${message}`, LogLevel.INFO);
         await this.messageField.setValue(message);
       }
     } catch (error: any) {
-      console.log(`Error filling up the the form: ${error.message}`);
+      customLogger(`Error filling up the the form: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -142,8 +143,9 @@ export class ContactPage extends BasePage {
     try {
       await this.backButton.waitForClickable();
       await this.backButton.click();
+      customLogger('Back button clicked successfully', LogLevel.INFO);
     } catch (error: any) {
-      console.log(`Error to click Back Button: ${error.message}`);
+      customLogger(`Error to click Back Button: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -158,10 +160,10 @@ export class ContactPage extends BasePage {
   public async checkForenameError(): Promise<string> {
     try {
       const errorText = await this.forenameError.getText();
-      logger(`Forename error: ${errorText}`);
+      customLogger(`Forename error: ${errorText}`, LogLevel.INFO);
       return errorText;
     } catch (error: any) {
-      console.log(`Error retrieving forename error: ${error.message}`);
+      customLogger(`Error retrieving forename error: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -174,10 +176,10 @@ export class ContactPage extends BasePage {
   public async checkEmailError(): Promise<string> {
     try {
       const errorText = await this.emailError.getText();
-      logger(`Email error: ${errorText}`);
+      customLogger(`Email error: ${errorText}`, LogLevel.INFO);
       return errorText;
     } catch (error: any) {
-      console.log(`Error retrieving email error: ${error.message}`);
+      customLogger(`Error retrieving email error: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -190,10 +192,10 @@ export class ContactPage extends BasePage {
   public async checkMessageError(): Promise<string> {
     try {
       const errorText = await this.messageError.getText();
-      logger(`Message error: ${errorText}`);
+      customLogger(`Message error: ${errorText}`, LogLevel.INFO);
       return errorText;
     } catch (error: any) {
-      console.log(`Error retrieving message error: ${error.message}`);
+      customLogger(`Error retrieving message error: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -206,7 +208,8 @@ export class ContactPage extends BasePage {
    */
   public async checkAllErrors(): Promise<ErrorMessages> {
     try {
-      console.log('Validating errors messages for empty mandatory fields.');
+      customLogger('Validating errors messages for empty mandatory fields.', LogLevel.INFO);
+
       await this.forenameError.waitForDisplayed({ timeout: 5000 });
       const forenameError = await this.forenameError.getText();
   
@@ -216,13 +219,13 @@ export class ContactPage extends BasePage {
       await this.messageError.waitForDisplayed({ timeout: 5000 });
       const messageError = await this.messageError.getText();
   
-      logger(`Forename error: ${forenameError}`);
-      logger(`Email error: ${emailError}`);
-      logger(`Message error: ${messageError}`);
+      customLogger(`Forename error: ${forenameError}`, LogLevel.INFO);
+      customLogger(`Email error: ${emailError}`, LogLevel.INFO);
+      customLogger(`Message error: ${messageError}`, LogLevel.INFO);
   
       return { forenameError, emailError, messageError };
     } catch (error: any) {
-      console.log(`Error checking all Errors on mandatory fields: ${error.message}`);
+      customLogger(`Error checking all Errors on mandatory fields: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -234,12 +237,12 @@ export class ContactPage extends BasePage {
   public async checkAllErrorsAreGone(): Promise<void> {
     try {
       // Wait until error messages are no longer displayed
-      console.log('Checking if error messages are gone after completing mandatory fields.');
+      customLogger('Checking if error messages are gone after completing mandatory fields.', LogLevel.INFO);
       await this.forenameError.waitForDisplayed({ reverse: true, timeout: 5000 });
       await this.emailError.waitForDisplayed({ reverse: true, timeout: 5000 });
       await this.messageError.waitForDisplayed({ reverse: true, timeout: 5000 });
     } catch (error: any) {
-      console.log(`Error checking for the absence of errors after completing mandatory fields: ${error.message}`);
+      customLogger(`Error checking for the absence of errors after completing mandatory fields: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -250,18 +253,18 @@ export class ContactPage extends BasePage {
    */
   public async validateSubmittedMessage(): Promise<string> {
     try {
-      logger("Waiting for the pop up message to disapper...");
+      customLogger("Waiting for the pop up message to disapper...", LogLevel.INFO);
       const feedbackModal = $('.popup.modal');
       await feedbackModal.waitForDisplayed({ reverse: true, timeout: 20000 });
           
-      logger("Waiting for the success message to be displayed...");
+      customLogger("Waiting for the success message to be displayed...", LogLevel.INFO);
       await (await this.submittedMessage).waitForDisplayed();
   
       const messageText = await this.submittedMessage.getText();
-      logger(`Success message text: ${messageText}`);
+      customLogger(`Success message text: ${messageText}`, LogLevel.INFO);
   
       expect(messageText).toContain('Thanks');
-      console.log(`Submitted success message validated: ${messageText}`);
+      customLogger(`Submitted success message validated: ${messageText}`, LogLevel.INFO);
   
       // Check if the "Back" button is visible
       const backButtonVisible = await this.backButton.isDisplayed();
@@ -269,7 +272,7 @@ export class ContactPage extends BasePage {
       
       return messageText;
     } catch (error: any) {
-      console.log(`Error validating submitted message: ${error.message}`);
+      customLogger(`Error validating submitted message: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }

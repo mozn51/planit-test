@@ -1,7 +1,7 @@
 import { $ } from '@wdio/globals';
 import { BasePage } from './base.page';
 import { urls } from '../constants/urls';
-import { logger } from '../utils/logger';
+import { customLogger, LogLevel } from '../utils/logger';
 
 
 export class CartPage extends BasePage {
@@ -15,8 +15,9 @@ export class CartPage extends BasePage {
     try {
       await this.open(urls.cart)
       await this.isPageValid(await this.cartPageButton, 'Cart');
+      customLogger('Successfully navigated to the Cart page', LogLevel.INFO);
     }catch (error: any) {
-      console.log(`Error opening Cart page: ${error.message}`);
+      customLogger(`Error opening Cart page: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -67,18 +68,19 @@ export class CartPage extends BasePage {
       const subtotal = await itemSubtotal.getText();
 
       // Logs for debugging
-      logger(`Validating cart item: ${itemName}`);
-      logger(`Expected price: ${expectedPrice}, Actual price: ${price}`);
-      logger(`Expected quantity: ${expectedQuantity}, Actual quantity: ${quantity}`);
-      logger(`Expected subtotal: ${expectedSubtotal}, Actual subtotal: ${subtotal}`);
+      customLogger(`Validating cart item: ${itemName}`, LogLevel.INFO);
+      customLogger(`Expected price: ${expectedPrice}, Actual price: ${price}`, LogLevel.INFO);
+      customLogger(`Expected quantity: ${expectedQuantity}, Actual quantity: ${quantity}`, LogLevel.INFO);
+      customLogger(`Expected subtotal: ${expectedSubtotal}, Actual subtotal: ${subtotal}`, LogLevel.INFO);
+           
       
       // Perform assertions
       expect(price).toBe(expectedPrice);
       expect(quantity).toBe(expectedQuantity.toString());
       expect(subtotal).toBe(expectedSubtotal);
     } catch (error: any) {
-      console.log(`Error validating cart item ${itemName}: ${error.message}`);
-      throw error;
+      customLogger(`Error validating cart item ${itemName}: ${error.message}`, LogLevel.ERROR);
+      throw error;      
     }
   }
 
@@ -89,9 +91,10 @@ export class CartPage extends BasePage {
   public async validateTotalPrice(expectedTotal: string): Promise<void> {
     try {
       const total = await this.totalPrice.getText();
+      customLogger(`Validating total price: Expected ${expectedTotal}, Actual ${total}`, LogLevel.INFO);
       expect(total).toBe(expectedTotal);
     }catch (error: any) {
-      console.log(`Error validating total price: ${error.message}`);
+      customLogger(`Error validating total price: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -103,9 +106,10 @@ export class CartPage extends BasePage {
   public async isCartEmpty(): Promise<boolean> {
     try {
       const emptyMessageDisplayed = await this.emptyCartMessage.isDisplayed();
+      customLogger(`Cart empty status: ${emptyMessageDisplayed}`, LogLevel.INFO);
       return emptyMessageDisplayed;
     } catch (error: any) {
-      console.log(`Error checking if cart is empty: ${error.message}`);
+      customLogger(`Error checking if cart is empty: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
@@ -124,16 +128,17 @@ export class CartPage extends BasePage {
       const isEmpty = await this.isCartEmpty();
 
       if (isEmpty) {
-          console.log('Cart is empty. No items to validate.');
+          customLogger('Cart is empty. No items to validate.', LogLevel.ERROR);
           throw new Error('Cannot validate items: the cart is empty.');
       } else {
           for (let value of expectedItems) {
             const { name, price, quantity, subtotal } = value;
             await this.validateItemInCart(name, price, quantity, subtotal);
           }
+          customLogger('Successfully validated all cart items.', LogLevel.INFO);
       }
     } catch (error: any) {
-      console.log(`Error validating cart items: ${error.message}`);
+      customLogger(`Error validating cart items: ${error.message}`, LogLevel.ERROR);
       throw error;
     }
   }
