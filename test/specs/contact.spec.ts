@@ -37,7 +37,6 @@ describe('Test Case 2: Validate Successful Submission on Contact Page, running t
     for (let i = 0; i < 5; i++) {
         it(`Test # ${i + 1}: Validate Successful Feedback`, async () => {
             // 1. From the home page, go to contact page
-            console.log(`Test # ${i + 1}`);
             await homePage.openUrl();
             await homePage.clickContact();
 

@@ -13,6 +13,7 @@ The project follows a typical WebdriverIO structure with additional separation f
 │   └── urls.ts                 # URL Constants
 ├── data/
 │   └── shopData.ts             # Contains product data for tests
+├── logs/                       # Folder where log files will be stored
 ├── pages/
 │   ├── base.page.ts            # Base page containing common functions
 │   ├── cart.page.ts            # Page object for the Cart Page
@@ -25,6 +26,7 @@ The project follows a typical WebdriverIO structure with additional separation f
 │       ├── contact.spec.ts     # Test cases for the Contact Page
 ├── utils/
 │   └── logger.ts               # Utility for logging
+|── .env                        # Environment variables for the project
 ├── wdio.conf.ts                # WebdriverIO configuration
 ├── .gitignore                  # Files to ignore in git
 ├── README.md                   # Project README file
@@ -58,11 +60,25 @@ npm install
 ```bash
 java -version
 ```
+
+### 4. Configure Environment Variables:
+Create a `.env` file in the root of your project directory. This file is used to set important configuration options, such as enabling/disabling Winston logging and setting the log level.
+
+Example `.env` file:
+```bash
+USE_WINSTON=true
+LOG_LEVEL=info
+```
+You can modify these values based on your logging preferences and requirements.
+
 </details>
 <details>
 <summary><h2>Running the Tests</h2></summary>
 You can execute the test suite by running the following command:
 This will run all tests defined in the test/specs/ folder using the configuration provided in wdio.conf.ts.
+
+The `.env` file controls the logging output during test execution.
+Ensure that the `.env` file is correctly set up before running the tests to adjust the verbosity of logs and the logger backend (Winston or console).
 
 ```bash
 npx wdio run wdio.conf.ts
@@ -97,6 +113,9 @@ If you don't have Jenkins installed on your local machine or server, you can fol
 npm install
 npx wdio run wdio.conf.ts
 ```
+
+Ensure that the `.env` file is included or configured within Jenkins so that environment variables such as `USE_WINSTON` and `LOG_LEVEL` are correctly applied when running the tests. This will allow Jenkins to use the same logging configuration as your local environment.
+
 </details>
 <details>
 <summary><h2>Troubleshooting</h2></summary>
@@ -113,11 +132,65 @@ npx wdio run wdio.conf.ts
  - **Issues with Jenkins:**
    - Make sure Jenkins has access to all necessary environment variables and system paths.
    - Check Jenkins logs for any issues with plugin installations or builds.
+ 
+ - **Issues with logs:**
+    - If logs are not appearing as expected or the tests are failing unexpectedly, check the `.env` file to ensure the environment variables are correctly set.
+    - For example, setting `LOG_LEVEL=debug` can provide more detailed logs for troubleshooting.
 
 ### Debugging:
 To debug the test cases, you can use the following steps:
 ```bash
 npx wdio run wdio.conf.ts --debug
+```
+</details>
+<details>
+<summary><h2>Logging</h2></summary>
+
+The project uses a logging utility located in `utils/logger.ts`. This allows consistent logging across different environments with or without Winston.
+
+#### Using Winston
+By default, Winston is used to capture and format logs. If Winston is enabled via environment variables, logs will be structured with timestamps and log levels (e.g., INFO, ERROR). Logs can also be directed to different transports (e.g., files, console).
+
+#### Environment Configuration
+Environment Configuration
+
+Logging behavior is controlled by environment variables defined in the `.env` file. Here's how to configure it:
+
+```bash
+USE_WINSTON=true  # Enable or disable Winston logging
+LOG_LEVEL=info    # Set the log level (info, warn, error, debug)
+```
+
+If Winston is disabled, a simpler console logging system is used, which outputs logs directly to the console with timestamps in ISO format.
+
+#### Log Levels
+- **INFO**: General information about test steps.
+- **WARN**: Warnings about potential issues.
+- **ERROR**: Critical issues that cause test failures.
+- **DEBUG**: Detailed debugging information, useful for development and troubleshooting.
+
+#### Example Log Output:
+
+Logs will include the following information:
+
+ - Timestamp (in the format YYYY-MM-DD HH:mm:ss or ISO 8601 for fallback)
+ - Log level (INFO, WARN, ERROR, DEBUG)
+ - Message detailing the current test step or error
+
+
+Example output with Winston or without Winston
+
+```bash
+2024-09-24 15:34:56 [INFO]: Navigated to Shop page successfully
+2024-09-24 15:34:57 [ERROR]: Error adding product to cart: Product not found
+```
+
+#### How to use Logging:
+
+To add custom log messages throughout the code, use the `customLogger` function:
+
+```bash
+customLogger('Navigated to Shop page successfully', LogLevel.INFO);
 ```
 </details>
 <details>
@@ -135,12 +208,4 @@ npx wdio run wdio.conf.ts --debug
 4. **Parallel Test Execution**:
    - Configure WebdriverIO to run tests in parallel across different browser sessions to reduce execution time.
 
-</details>
-<details>
-<summary><h2>Logging</h2></summary>
-
-The project uses a logging utility in `utils/logger.ts`. Logs are primarily used for:
-
-- Capturing the state of tests.
-- Helping with debugging during Jenkins CI runs.
 </details>
