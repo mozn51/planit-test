@@ -57,7 +57,7 @@ export const config = {
     capabilities: [{
         browserName: 'firefox',
         'moz:firefoxOptions': {
-            args: ['-headless']
+            args: ['--headless', '--disable-gpu']
         },
         acceptInsecureCerts: true
     }],
